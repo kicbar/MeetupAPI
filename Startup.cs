@@ -1,3 +1,4 @@
+using AutoMapper;
 using MeetupAPI.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +17,7 @@ namespace MeetupAPI
             services.AddMvc();
             services.AddDbContext<MeetupContext>();
             services.AddScoped<MeetupSeeder>();
+            services.AddAutoMapper(this.GetType().Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
