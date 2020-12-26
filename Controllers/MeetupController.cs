@@ -30,5 +30,18 @@ namespace MeetupAPI.Controllers
             return Ok(meetupDtos);
         }
 
+        [HttpGet("{meetupName}")]
+        public ActionResult<MeetupDeatilsDto> Get(string meetupName)
+        {
+            var meetup = _meetupContext.Meetups.
+                Include(m => m.Location)
+                .FirstOrDefault(m => m.Name.Replace(" ", "-").ToLower() == meetupName.ToLower());
+            if (meetup == null)
+                return NotFound();
+
+            var meetupDto = _mapper.Map<MeetupDeatilsDto>(meetup);
+            return Ok(meetupDto);
+        }
+
     }
 }
