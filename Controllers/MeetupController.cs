@@ -33,8 +33,8 @@ namespace MeetupAPI.Controllers
         [HttpGet("{meetupName}")]
         public ActionResult<MeetupDeatilsDto> Get(string meetupName)
         {
-            var meetup = _meetupContext.Meetups.
-                Include(m => m.Location)
+            var meetup = _meetupContext.Meetups
+                .Include(m => m.Location)
                 .FirstOrDefault(m => m.Name.Replace(" ", "-").ToLower() == meetupName.ToLower());
             if (meetup == null)
                 return NotFound();
@@ -78,6 +78,22 @@ namespace MeetupAPI.Controllers
             meetup.Date = model.Date;
             meetup.IsPrivate = model.IsPrivate;
 
+            _meetupContext.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{meetupName}")]
+        public ActionResult Delete(string meetupName)
+        {
+            var meetup = _meetupContext.Meetups
+                .Include(m => m.Location)
+                .FirstOrDefault(m => m.Name.Replace(" ", "-").ToLower() == meetupName.ToLower());
+
+            if (meetup == null)
+                return NotFound();
+
+            _meetupContext.Remove(meetup);
             _meetupContext.SaveChanges();
 
             return NoContent();
