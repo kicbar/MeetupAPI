@@ -3,6 +3,7 @@ using MeetupAPI.Entities;
 using MeetupAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,11 +14,13 @@ namespace MeetupAPI.Controllers
     {
         private readonly MeetupContext _meetupContext;
         private readonly IMapper _mapper;
+        private readonly ILogger<LectureController> _logger;
 
-        public LectureController(MeetupContext meetupContext, IMapper mapper)
+        public LectureController(MeetupContext meetupContext, IMapper mapper, ILogger<LectureController> logger)
         {
             _meetupContext = meetupContext;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -66,6 +69,8 @@ namespace MeetupAPI.Controllers
             if (meetup == null)
                 return NotFound();
 
+            _logger.LogWarning($"Lectures for {meetupName} - removed.");
+
             _meetupContext.Lectures.RemoveRange(meetup.Lectures);
             _meetupContext.SaveChanges();
 
@@ -81,6 +86,8 @@ namespace MeetupAPI.Controllers
 
             if (meetup == null)
                 return NotFound();
+
+            _logger.LogWarning($"Lecture for {meetupName} and Id: {Id} - removed.");
 
             var lecture = meetup.Lectures.FirstOrDefault(l => l.Id == Id);
 
