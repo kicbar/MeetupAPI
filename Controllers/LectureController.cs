@@ -3,10 +3,8 @@ using MeetupAPI.Entities;
 using MeetupAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MeetupAPI.Controllers
 {
@@ -36,7 +34,6 @@ namespace MeetupAPI.Controllers
 
             return Ok(lectures);
         }
-
 
         [HttpPost]
         public ActionResult Post(string meetupName, [FromBody] LectureDto model)
