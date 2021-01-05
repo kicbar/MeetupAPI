@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MeetupAPI.Models;
+using MeetupAPI.Validators;
 
 namespace MeetupAPI
 {
@@ -18,6 +22,8 @@ namespace MeetupAPI
         {
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddMvc();
+            services.AddControllers().AddFluentValidation();
+            services.AddScoped<IValidator<RegisterUserDto>, RegisterUserValidator>();
             services.AddDbContext<MeetupContext>();
             services.AddScoped<MeetupSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
