@@ -1,5 +1,6 @@
-﻿using MeetupAPI.Entities;
+﻿ using MeetupAPI.Entities;
 using MeetupAPI.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,12 @@ namespace MeetupAPI.Controllers
     [Route("api/account")]
     public class AccountController : ControllerBase
     {
+        private readonly IPasswordHasher<User> _passwordHasher;
         private readonly MeetupContext _meetupContext;
 
-        public AccountController(MeetupContext meetupContext)
+        public AccountController(MeetupContext meetupContext, IPasswordHasher<User> passwordHasher)
         {
+            _passwordHasher = passwordHasher;
             _meetupContext = meetupContext;
         }
 
@@ -24,7 +27,7 @@ namespace MeetupAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = new User()
+            var newUser = new User()
             {
                 Email = registerUserDto.Email,
                 Nationality = registerUserDto.Nationality,
@@ -32,7 +35,10 @@ namespace MeetupAPI.Controllers
                 RoleId = registerUserDto.RoleId
             };
 
-            _meetupContext.Users.Add(user);
+            var passwordHash = _passwordHasher.HashPassword(newUser, registerUserDto.Password);
+            newUser.PasswordHash = passwordHash;
+
+            _meetupContext.Users.Add(newUser);
             _meetupContext.SaveChanges();
 
             return Ok();
