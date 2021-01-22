@@ -11,6 +11,11 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using MeetupAPI.Models;
 using MeetupAPI.Validators;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Binder;
+using MeetupAPI.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace MeetupAPI
 {
@@ -18,8 +23,36 @@ namespace MeetupAPI
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+
+
+        public IConfiguration Configuration { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
+            /*var jwtOptions = new JwtOptions();
+            Configuration.GetSection("jwt").Bind(jwtOptions);
+
+            services.Configure<JwtOptions>(Configuration.GetSection("jwt"));
+
+            services.AddSingleton(jwtOptions);
+            
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "Bearer";
+                options.DefaultScheme = "Bearer";
+                options.DefaultChallengeScheme = "Bearer";
+
+            }).AddJwtBearer(cfg =>
+            {
+                cfg.RequireHttpsMetadata = false;
+                cfg.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = jwtOptions.JwtIssuer,
+                    ValidAudience = jwtOptions.JwtIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.JwtKey))
+                };
+            });*/
+
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddMvc();
             services.AddControllers().AddFluentValidation();
@@ -47,6 +80,8 @@ namespace MeetupAPI
                 app.UseDeveloperExceptionPage();
             }
 
+
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
