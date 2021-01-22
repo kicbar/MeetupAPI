@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration.Binder;
 using MeetupAPI.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using MeetupAPI.Filters;
 
 namespace MeetupAPI
 {
@@ -55,7 +56,8 @@ namespace MeetupAPI
 
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddMvc();
-            services.AddControllers().AddFluentValidation();
+            services.AddControllers(options => options.Filters.Add(typeof(ExceptionFilter)))
+                .AddFluentValidation();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserValidator>();
             services.AddDbContext<MeetupContext>();
             services.AddScoped<MeetupSeeder>();
