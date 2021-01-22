@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MeetupAPI.Entities;
+using MeetupAPI.Filters;
 using MeetupAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 namespace MeetupAPI.Controllers
 {
     [Route("api/meetup")]
+    [TimeTrackFilter]
     public class MeetupController : ControllerBase
     {
         private readonly MeetupContext _meetupContext;
